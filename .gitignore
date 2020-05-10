@@ -1,0 +1,5 @@
+__MACOSX/
+**/bin
+**/obj
+SourceCode/DacSection2/Reactivities/Persistence/obj/Debug/netstandard2.1/Persistence.AssemblyInfo.cs
+Reactivities/API/reactivities.db
