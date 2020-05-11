@@ -12,6 +12,9 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Persistence;
+using MediatR;
+using Application.Activities;
+using Microsoft.Extensions.Logging.Console;
 
 namespace API
 {
@@ -22,6 +25,7 @@ namespace API
             Configuration = configuration;
         }
 
+        public static readonly ILoggerFactory _myLoggerFactory  = LoggerFactory.Create(builder => { builder.AddConsole(); });
         public IConfiguration Configuration { get; }
 
         // This method gets called by the runtime. Use this method to add services to the container.
@@ -29,6 +33,7 @@ namespace API
         {
             services.AddDbContext<DataContext>(opt =>
             {
+                opt.UseLoggerFactory(_myLoggerFactory);
                 opt.UseSqlite(Configuration.GetConnectionString("DefaultConnection"));
                 
             });
@@ -44,6 +49,7 @@ namespace API
 
           //  services.AddControllers();
 //            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_3_0);
+            services.AddMediatR(typeof(List.Handler).Assembly);
             services.AddMvc(option => option.EnableEndpointRouting = false);
         }
 
