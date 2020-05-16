@@ -6,12 +6,12 @@ interface IProps {
   activities: IActivity[];
   selectActivity: (id: string) => void;
 }
-
-export const ActivityList: React.FC<IProps> = ({ activities,selectActivity }) => {
+//{ activities,selectActivity }
+export const ActivityList: React.FC<IProps> = (p) => {
   return (
     <Segment clearing>
       <Item.Group divided>
-        {activities.map((activity) => (
+        {p.activities.map((activity) => (
           <Item key={activity.id}>
             <Item.Content>
               <Item.Header as="a">{activity.title}</Item.Header>
@@ -21,7 +21,7 @@ export const ActivityList: React.FC<IProps> = ({ activities,selectActivity }) =>
                 <div>{activity.city},{activity.venue}</div>
               </Item.Description>
               <Item.Extra>
-                <Button onClick={()=>selectActivity(activity.id)} floated="right" content="View" color="blue"></Button>
+                <Button onClick={()=>p.selectActivity(activity.id)} floated="right" content="View" color="blue"></Button>
                 <Label basic content={activity.category}></Label>
               </Item.Extra>
             </Item.Content>

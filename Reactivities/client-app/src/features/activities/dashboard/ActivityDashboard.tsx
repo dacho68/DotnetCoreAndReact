@@ -9,26 +9,25 @@ interface IProps {
   activities: IActivity[];
   selectActivity: (id: string) => void;
   selectedActivity: IActivity | null;
+  editMode: boolean;
+  setEditMode: (editMode: boolean) => void;
 }
 
-export const ActivityDashboard: React.FC<IProps> = ({
-  activities,
-  selectActivity,
-  selectedActivity,
-}) => {
+export const ActivityDashboard: React.FC<IProps> = (p) => {
   return (
     <Grid columns={2}>
       <Grid.Column width={10}>
         <ActivityList
-          activities={activities}
-          selectActivity={selectActivity}
+          activities={p.activities}
+          selectActivity={p.selectActivity}
         ></ActivityList>
       </Grid.Column>
       <Grid.Column floated="right" width={6}>
-        {selectedActivity && (
-          <ActivityDetails activity={selectedActivity}></ActivityDetails>
+        {p.selectedActivity && !p.editMode && (
+          <ActivityDetails activity={p.selectedActivity} setEditMode={p.setEditMode}></ActivityDetails>
         )}
-        <ActivityForm></ActivityForm>
+        {p.editMode &&
+        <ActivityForm></ActivityForm>}
       </Grid.Column>
     </Grid>
   );
