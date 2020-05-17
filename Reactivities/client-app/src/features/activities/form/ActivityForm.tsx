@@ -7,19 +7,24 @@ import {
   Button,
 } from 'semantic-ui-react';
 import { IActivity } from '../../../app/models/activity';
-import {v4 as uuid} from 'uuid';// npm install uuid ;npm install @types/uuid
+import { v4 as uuid } from 'uuid'; // npm install uuid ;npm install @types/uuid
 
 interface IProps {
   setEditMode: (editMode: boolean) => void;
-  activity: IActivity | null;
+  activity: IActivity;
   createActivity: (activity: IActivity) => void;
-  editActivity: (activity: IActivity) => void; 
+  editActivity: (activity: IActivity) => void;
 }
 
-export const ActivityForm: React.FC<IProps> = (p) => {
+export const ActivityForm: React.FC<IProps> = ({
+  setEditMode,
+  activity: initialFormState,
+  editActivity,
+  createActivity,
+}) => {
   const initializeForm = () => {
-    if (p.activity) {
-      return p.activity;
+    if (initialFormState) {
+      return initialFormState;
     } else {
       return {
         id: '',
@@ -36,70 +41,68 @@ export const ActivityForm: React.FC<IProps> = (p) => {
   const [activity, setActivity] = useState<IActivity>(initializeForm);
 
   const handleSubmit = () => {
-      console.log(activity);
-      if(activity.id.length === 0) {
-        let newActitivy = {
+    if (activity.id.length === 0) {
+      let newActivity = {
         ...activity,
-        id: uuid()
-        }
-        p.createActivity(newActitivy);
-      }
-      else{
-        p.editActivity(activity);
-      }
-    
-  }
+        id: uuid(),
+      };
+      createActivity(newActivity);
+    } else {
+      editActivity(activity);
+    }
+  };
 
-  const handleInputChange = (event: FormEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+  const handleInputChange = (
+    event: FormEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
     const { name, value } = event.currentTarget;
-   // console.log(`${name},${value}`);
     setActivity({ ...activity, [name]: value });
   };
 
   return (
     <Segment clearing>
       <Form onSubmit={handleSubmit}>
-        <FormInput
+        <Form.Input
           onChange={handleInputChange}
           name="title"
-          placeholder="Titlte"
-          value={p.activity?.title}
+          placeholder="Title"
+          value={activity.title}
         />
-        <FormTextArea
+        <Form.TextArea
           onChange={handleInputChange}
           name="description"
-          rows={3}
+          rows={2}
           placeholder="Description"
-          value={p.activity?.description}
+          value={activity.description}
         />
-        <FormInput
+        <Form.Input
           onChange={handleInputChange}
           name="category"
           placeholder="Category"
-          value={p.activity?.category}
+          value={activity.category}
         />
-        <FormInput
+        <Form.Input
           onChange={handleInputChange}
           name="date"
-          type='datetime-local'
+          type="datetime-local"
           placeholder="Date"
-          value={p.activity?.date}
+          value={activity.date}
         />
-        <FormInput
+        <Form.Input
           onChange={handleInputChange}
           name="city"
           placeholder="City"
-          value={p.activity?.city}
+          value={activity.city}
         />
-        <FormInput
+        <Form.Input
           onChange={handleInputChange}
           name="venue"
           placeholder="Venue"
-          value={p.activity?.venue}
+          value={activity.venue}
         />
         <Button floated="right" positive type="submit" content="Submit" />
         <Button
-          onClick={() => p.setEditMode(false)}
+          onClick={() => setEditMode(false)}
           floated="right"
           type="button"
           content="Cancel"
