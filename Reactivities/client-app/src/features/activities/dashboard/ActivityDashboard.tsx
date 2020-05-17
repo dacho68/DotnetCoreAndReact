@@ -15,6 +15,7 @@ interface IProps {
   setSelectedActivity: (activity: IActivity | null) => void;
   createActivity: (activity: IActivity) => void;
   editActivity: (activity: IActivity) => void;
+  deleteActivity: (id: string) => void;
 }
 
 export const ActivityDashboard: React.FC<IProps> = (p) => {
@@ -24,6 +25,7 @@ export const ActivityDashboard: React.FC<IProps> = (p) => {
         <ActivityList
           activities={p.activities}
           selectActivity={p.selectActivity}
+          deleteActivity={p.deleteActivity}
         ></ActivityList>
       </Grid.Column>
       <Grid.Column floated="right" width={6}>
