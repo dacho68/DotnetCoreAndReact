@@ -7,10 +7,13 @@ import {
   Button,
 } from 'semantic-ui-react';
 import { IActivity } from '../../../app/models/activity';
+import {v4 as uuid} from 'uuid';// npm install uuid ;npm install @types/uuid
 
 interface IProps {
   setEditMode: (editMode: boolean) => void;
   activity: IActivity | null;
+  createActivity: (activity: IActivity) => void;
+  editActivity: (activity: IActivity) => void; 
 }
 
 export const ActivityForm: React.FC<IProps> = (p) => {
@@ -34,11 +37,22 @@ export const ActivityForm: React.FC<IProps> = (p) => {
 
   const handleSubmit = () => {
       console.log(activity);
+      if(activity.id.length === 0) {
+        let newActitivy = {
+        ...activity,
+        id: uuid()
+        }
+        p.createActivity(newActitivy);
+      }
+      else{
+        p.editActivity(activity);
+      }
+    
   }
 
   const handleInputChange = (event: FormEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = event.currentTarget;
-    console.log(`${name},${value}`);
+   // console.log(`${name},${value}`);
     setActivity({ ...activity, [name]: value });
   };
 
@@ -67,7 +81,7 @@ export const ActivityForm: React.FC<IProps> = (p) => {
         <FormInput
           onChange={handleInputChange}
           name="date"
-          type="date"
+          type='datetime-local'
           placeholder="Date"
           value={p.activity?.date}
         />
