@@ -4,6 +4,7 @@ import axios from 'axios';
 import { IActivity } from '../models/activity';
 import { NavBar } from '../../features/nav/NavBar';
 import { ActivityDashboard } from '../../features/activities/dashboard/ActivityDashboard';
+import agent from '../api/agent';
 
 interface IState {
   activities: IActivity[];
@@ -29,33 +30,39 @@ const App = () => {
   }
 
   const handleCreateActivity = (newActivity: IActivity) => {
-    setActivities([...activities,newActivity])
-    setSelectedActivity(newActivity);
-    setEditMode(false);
+    agent.Activities.create(newActivity).then(() => {
+      setActivities([...activities,newActivity]);
+      setSelectedActivity(newActivity);
+      setEditMode(false);
+    })
+
   }
 
   const handleEditActivity = (activity: IActivity) => {
-    setActivities([...activities.filter(a=>a.id !== activity.id),activity])
-    setSelectedActivity(activity);
-    setEditMode(false);
+    agent.Activities.update(activity).then(()=>{
+      setActivities([...activities.filter(a=>a.id !== activity.id),activity]);
+      setSelectedActivity(activity);
+      setEditMode(false);
+    })
   }
 
   const handleDeleteActivity = (id: string) => {
-    setActivities([...activities.filter(a=>a.id !== id)])
+    agent.Activities.delete(id).then(()=>{
+      setActivities([...activities.filter(a=>a.id !== id)]);
+    })
+    
   }
 
   useEffect(() => {
-    axios
-      .get<IActivity[]>('http://localhost:5000/api/activities')
+    agent.Activities.list()
       .then((response) => {
-        let activites = [];
-        response.data.forEach(activity => {
+        let activities: IActivity[] = [];
+        response.forEach(activity => {
           activity.date = activity.date.split('.')[0];
-          activites.push(activity);
+          activities.push(activity);
         })
-        setActivities(response.data);
+        setActivities(activities);
       });
-    return () => {};
   }, []);
 
   return (

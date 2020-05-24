@@ -1,8 +1,7 @@
 import axios, { AxiosResponse } from 'axios'
-import { url } from 'inspector';
 import { IActivity } from '../models/activity';
 
-axios.defaults.baseURL = 'heep://localhost:5000/api'
+axios.defaults.baseURL = 'http://localhost:5000/api';
 
 const responseBody = (response: AxiosResponse) => response.data;
 
@@ -14,11 +13,13 @@ const requests = {
 }
 
 const Activities = {
-    list: () => requests.get('/activitities'),
-    details: (id: string) => requests.get (`/activities/${id}`),
-    create: (activity: IActivity) => requests.post('/activities',activity),
-    update: (activity: IActivity) => requests.put('/activities/${activity.id}',activity),
-    delete: (id: string) => requests.del(`/activities/#{id}`)
+    list: (): Promise<IActivity[]> => requests.get('/activities'),
+    details: (id: string) => requests.get(`/activities/${id}`),
+    create: (activity: IActivity) => requests.post('/activities', activity),
+    update: (activity: IActivity) => {
+        return requests.put(`/activities/${activity.id}`, activity);
+    },
+    delete: (id: string) => requests.del(`/activities/${id}`)
 }
 
 export default {
