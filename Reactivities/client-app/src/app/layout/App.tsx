@@ -5,6 +5,7 @@ import { IActivity } from '../models/activity';
 import { NavBar } from '../../features/nav/NavBar';
 import { ActivityDashboard } from '../../features/activities/dashboard/ActivityDashboard';
 import agent from '../api/agent';
+import { LoadingComponent } from './LoadingComponent';
 
 interface IState {
   activities: IActivity[];
@@ -17,6 +18,8 @@ const App = () => {
   );
 
   const [editMode, setEditMode] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const [submitting, setSubmitting] = useState(false);
 
   const handleSelectActivity = (id: string) => {
     console.log([...activities]);
@@ -30,27 +33,28 @@ const App = () => {
   }
 
   const handleCreateActivity = (newActivity: IActivity) => {
+    setSubmitting(true);
     agent.Activities.create(newActivity).then(() => {
       setActivities([...activities,newActivity]);
       setSelectedActivity(newActivity);
       setEditMode(false);
-    })
-
+    }).then(()=>setSubmitting(false))
   }
 
   const handleEditActivity = (activity: IActivity) => {
+    setSubmitting(true);
     agent.Activities.update(activity).then(()=>{
       setActivities([...activities.filter(a=>a.id !== activity.id),activity]);
       setSelectedActivity(activity);
       setEditMode(false);
-    })
+    }).then(()=>setSubmitting(false))
   }
 
   const handleDeleteActivity = (id: string) => {
+    setSubmitting(true);
     agent.Activities.delete(id).then(()=>{
       setActivities([...activities.filter(a=>a.id !== id)]);
-    })
-    
+    }).then(()=>setSubmitting(false))
   }
 
   useEffect(() => {
@@ -62,8 +66,10 @@ const App = () => {
           activities.push(activity);
         })
         setActivities(activities);
-      });
+      }).then(()=>setLoading(false));
   }, []);
+
+  if(loading) return <LoadingComponent content='Loading Activities...' />
 
   return (
     <Fragment>
@@ -79,6 +85,7 @@ const App = () => {
           createActivity={handleCreateActivity}
           editActivity={handleEditActivity}
           deleteActivity={handleDeleteActivity}
+          submitting={submitting}
         />
       </Container>
     </Fragment>
