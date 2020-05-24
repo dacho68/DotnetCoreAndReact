@@ -4,4 +4,12 @@ First you need to install EFCore tool
 
 Then create mingration
 
->dotnet
+```
+>dotnet ef migrations add "ActivityEntityAdded" -p .\Persistence\ -s .\API\
+```
+
+Drop a database
+go to the Reactivities folder
+```
+>dotnet ef database drop -p .\Persistence\ -s .\API\
+```
